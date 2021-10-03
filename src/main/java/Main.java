@@ -1,35 +1,27 @@
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Main {
 
     public static void main(String[] args) {
 
-        Thread thread1 = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(5000);
-                    System.out.println("5 seconds");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        BlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();
 
-        Thread thread2 = new Thread() {
+        Consumer consumer = new Consumer(blockingQueue);
+        Thread consumerThread = new Thread(consumer);
 
-            @Override
-            public void run() {
-                try {
-                    sleep(7000);
-                    System.out.println("7 seconds");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        Producer producer = new Producer(blockingQueue, consumerThread);
+        Thread producerThread = new Thread(producer);
 
-        thread1.start();
-        thread2.start();
-        new Thread(new TenSecondsWaiter()).start();
-        System.out.println("Main thread");
+        producerThread.start();
+        consumerThread.start();
+
+        // ждем пока потоки умрут
+        try {
+            producerThread.join();
+            consumerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
