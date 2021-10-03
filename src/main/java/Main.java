@@ -1,35 +1,27 @@
 public class Main {
 
+    private static final int MAX_TIME = 15;
+    private static final int ONE_SECOND = 1;
+    private static final int FIVE_SECOND = 5;
+    private static final int SEVEN_SECOND = 7;
+
     public static void main(String[] args) {
 
-        Thread thread1 = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    sleep(5000);
-                    System.out.println("5 seconds");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        Chrono chrono = new Chrono(MAX_TIME);
 
-        Thread thread2 = new Thread() {
+        Thread chronoThread = new Thread(chrono);
+        Thread thread1 = new Thread(new Subscriber(chrono, ONE_SECOND));
+        Thread thread2 = new Thread(new Subscriber(chrono, FIVE_SECOND));
+        Thread thread3 = new Thread(new Subscriber(chrono, SEVEN_SECOND));
 
-            @Override
-            public void run() {
-                try {
-                    sleep(7000);
-                    System.out.println("7 seconds");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
+        chronoThread.start();
         thread1.start();
         thread2.start();
-        new Thread(new TenSecondsWaiter()).start();
-        System.out.println("Main thread");
+        thread3.start();
+
+        chronoThread.interrupt();
+        thread1.interrupt();
+        thread2.interrupt();
+        thread3.interrupt();
     }
 }
