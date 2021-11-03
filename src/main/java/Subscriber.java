@@ -10,15 +10,13 @@ public class Subscriber implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.interrupted()) {
             synchronized (chrono) {
 
                 try {
                     chrono.wait();
                 } catch (InterruptedException e) {
                 }
-
-                if (Thread.interrupted()) return;
 
                 if (chrono.time % this.shareTime == 0) {
                     System.out.println("Поток деления на " + this.shareTime + " здесь! Время: " + chrono.time);
