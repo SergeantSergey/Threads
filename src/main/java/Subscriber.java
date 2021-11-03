@@ -10,7 +10,7 @@ public class Subscriber implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.interrupted()) {
+        while (!Thread.interrupted() || chrono.maxTime <= chrono.time) {
             synchronized (chrono) {
 
                 try {
@@ -20,10 +20,6 @@ public class Subscriber implements Runnable {
 
                 if (chrono.time % this.shareTime == 0) {
                     System.out.println("Поток деления на " + this.shareTime + " здесь! Время: " + chrono.time);
-                }
-
-                if (chrono.maxTime == chrono.time) {
-                    return;
                 }
             }
         }

@@ -18,10 +18,5 @@ public class Main {
         thread1.start();
         thread2.start();
         thread3.start();
-
-        chronoThread.interrupt();
-        thread1.interrupt();
-        thread2.interrupt();
-        thread3.interrupt();
     }
 }
